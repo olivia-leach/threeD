@@ -3,18 +3,17 @@
 // element: a jQuery object containing the DOM element to use
 // dimensions: the number of cubes per row/column (default 3)
 // background: the scene background colour
-function Rubik(element, dimensions, background) {
+function Rubik(element, dimensions, floors, background) {
 
-  dimensions = dimensions || 3;
-  background = background || 0x303030;
+  background = background || 0x000000;
 
-  var width = element.innerWidth(),
+  let width = element.innerWidth(),
       height = element.innerHeight();
 
-  var debug = false;
+  let debug = false;
 
   /*** three.js boilerplate ***/
-  var scene = new THREE.Scene(),
+  let scene = new THREE.Scene(),
       camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000),
       renderer = new THREE.WebGLRenderer({ antialias: true });
 
@@ -23,7 +22,7 @@ function Rubik(element, dimensions, background) {
   renderer.shadowMapEnabled = true;
   element.append(renderer.domElement);
 
-  camera.position = new THREE.Vector3(-20, 20, 30);
+  camera.position = new THREE.Vector3(-20, 23, 30);
   camera.lookAt(scene.position);
   THREE.Object3D._threexDomEvent.camera(camera);
 
@@ -31,7 +30,7 @@ function Rubik(element, dimensions, background) {
   scene.add(new THREE.AmbientLight(0xffffff));
 
   /*** Camera controls ***/
-  var orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
+  let orbitControl = new THREE.OrbitControls(camera, renderer.domElement);
 
   /*** Debug aids ***/
   if(debug) {
@@ -39,21 +38,23 @@ function Rubik(element, dimensions, background) {
   }
 
   // build cubes
-  var colours = [0xC41E3A, 0x009E60, 0x0051BA, 0xFF5800, 0xFFD500, 0xFFFFFF],
-      faceMaterials = colours.map(function(c) {
-        return new THREE.MeshLambertMaterial({ color: c , ambient: c });
-      }),
-      cubeMaterials = new THREE.MeshFaceMaterial(faceMaterials);
 
-  var cubeSize = 4,
-      spacing = 0.1;
+  let colours = [0xC41E3A, 0x009E60, 0xFF5800, 0xFFD500, 0xFFFFFF];
 
-  var increment = cubeSize + spacing,
+  let cubeSize = 4,
+      floorHeight = 3,
+      spacing = 0,
+      vertSpacing = 0.5;
+
+  let increment = cubeSize + spacing,
+      vertIncrement = floorHeight + vertSpacing,
       allCubes = [];
 
   function newCube(x, y, z) {
-    var cubeGeometry = new THREE.CubeGeometry(cubeSize, cubeSize, cubeSize);
-    var cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
+    let cubeColor = colours[randomInt(0,colours.length-1)];
+    let cubeMaterial = new THREE.MeshBasicMaterial({color: cubeColor, transparent: true, opacity: 0.6});
+    let cubeGeometry = new THREE.CubeGeometry(cubeSize, floorHeight, cubeSize);
+    let cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.castShadow = true;
 
     cube.position = new THREE.Vector3(x, y, z);
@@ -63,16 +64,17 @@ function Rubik(element, dimensions, background) {
     allCubes.push(cube);
   }
 
-  var positionOffset = (dimensions - 1) / 2;
-  for(var i = 0; i < dimensions; i ++) {
-    for(var j = 0; j < dimensions; j ++) {
-      for(var k = 0; k < dimensions; k ++) {
+  let positionOffset = (dimensions - 1) / 2;
+  let floorOffset = (floorHeight - 1) / 2;
+  for(let i = 0; i < dimensions; i ++) {
+    for(let j = 0; j < floors; j ++) {
+      for(let k = 0; k < dimensions; k ++) {
 
-        var x = (i - positionOffset) * increment,
-            y = (j - positionOffset) * increment,
+        let x = (i - positionOffset) * increment,
+            y = (j - floorOffset) * vertIncrement,
             z = (k - positionOffset) * increment;
 
-        newCube(x, y, z);
+        newCube(x, y - floors/2, z);
       }
     }
   }

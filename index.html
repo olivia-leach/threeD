@@ -15,26 +15,36 @@
 
   <body>
 
-    <div id="scene"></div>
+    <!-- <div id="scene"></div> -->
 
-    <script src="lib/jquery-2.0.3.js"></script>
-    <script src="lib/three.js"></script>
-    <script src="lib/OrbitControls.js"></script>
+    <!-- <script src="lib/jquery-2.0.3.js"></script> -->
+    <!-- <script src="lib/three.js"></script> -->
+    <!-- <script src="lib/OrbitControls.js"></script>
     <script src='lib/threex.domevent.js'></script>
     <script src='lib/threex.domevent.object3d.js'></script>
 
     <script src="vendor.bundle.js" type="text/javascript" charset="utf-8" defer></script>
     <script src="bundle.js" type="text/javascript" charset="utf-8" defer></script>
 
-    <script src="assets/scripts/index.js"></script>
-    <script>
+    <script src="assets/scripts/index.js"></script> -->
+
+    <script src="lib/three.js"></script>
+
+		<script src="lib/TrackballControls.js"></script>
+
+		<script src="lib/stats.min.js"></script>
+
+    <script src="assets/scripts/interactive-cubes.js"></script>
+
+    <!-- <script>
 
       $(function() {
-        function init(dimensions) {
+        function init(dimensions, floors) {
           dimensions = +(dimensions) || 3;
+          floors = +(floors) || 6;
 
           var element = $("#scene").empty();
-          var rubik = new Rubik(element, dimensions);
+          // var rubik = new Rubik(element, dimensions, floors);
 
         };
 
@@ -42,7 +52,7 @@
 
       });
 
-    </script>
+    </script> -->
 
   </body>
 
